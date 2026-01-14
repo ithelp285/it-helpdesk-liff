@@ -42,7 +42,8 @@
 
   <script>
     async function main() {
-      await liff.init({ liffId: "ใส่_LIFF_ID_ของคุณตรงนี้" });
+      await liff.init({ liffId: "
+2008889647-R8wwsYYO" });
 
       document.getElementById("loading").style.display = "none";
       document.getElementById("form").style.display = "block";
@@ -56,7 +57,7 @@
     document.getElementById("form").onsubmit = async (e) => {
       e.preventDefault();
 
-      await fetch("PUT_N8N_WEBHOOK_URL_HERE", {
+      await fetch("https://ithelp.app.n8n.cloud/webhook/line-it", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
