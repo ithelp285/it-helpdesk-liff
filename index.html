@@ -1,1 +1,80 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <title>แจ้งปัญหา IT</title>
+
+  <!-- LIFF SDK -->
+  <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 20px;
+    }
+    input, textarea, select, button {
+      width: 100%;
+      margin-bottom: 10px;
+      padding: 8px;
+    }
+  </style>
+</head>
+
+<body>
+  <h2>แจ้งปัญหา IT</h2>
+
+  <form id="form" style="display:none">
+    <input id="name" placeholder="ชื่อผู้แจ้ง" />
+    <input id="dept" placeholder="แผนก" />
+    <input id="phone" placeholder="เบอร์โทร" />
+    <input id="type" placeholder="ประเภทปัญหา" />
+    <textarea id="detail" placeholder="รายละเอียด"></textarea>
+
+    <select id="priority">
+      <option value="ปกติ">ปกติ</option>
+      <option value="ด่วน">ด่วน</option>
+    </select>
+
+    <button type="submit">ส่งแจ้งปัญหา</button>
+  </form>
+
+  <p id="loading">กำลังโหลด...</p>
+
+  <script>
+    async function main() {
+      await liff.init({ liffId: "ใส่_LIFF_ID_ของคุณตรงนี้" });
+
+      document.getElementById("loading").style.display = "none";
+      document.getElementById("form").style.display = "block";
+
+      const profile = await liff.getProfile();
+      document.getElementById("name").value = profile.displayName;
+    }
+
+    main();
+
+    document.getElementById("form").onsubmit = async (e) => {
+      e.preventDefault();
+
+      await fetch("PUT_N8N_WEBHOOK_URL_HERE", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          action: "NEW",
+          lineUserId: liff.getDecodedIDToken().sub,
+          "ชื่อผู้แจ้ง": name.value,
+          "แผนก": dept.value,
+          "เบอร์โทร": phone.value,
+          "ประเภทปัญหา": type.value,
+          "รายละเอียด": detail.value,
+          "ความเร่งด่วน": priority.value
+        })
+      });
+
+      alert("ส่งแจ้งปัญหาเรียบร้อย");
+      liff.closeWindow();
+    };
+  </script>
+</body>
+</html>
 
