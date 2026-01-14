@@ -2,79 +2,410 @@
 <html lang="th">
 <head>
   <meta charset="UTF-8" />
-  <title>แจ้งปัญหา IT</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Primus IT Helpdesk</title>
 
   <!-- LIFF SDK -->
   <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
 
   <style>
-    body {
-      font-family: sans-serif;
-      padding: 20px;
+    :root{
+      --bg:#0b1220;
+      --card:#0f1b33;
+      --card2:#0c1730;
+      --text:#e8eefc;
+      --muted:#a8b3cf;
+      --line:#233456;
+      --accent:#22c55e;      /* Primus-ish green */
+      --accent2:#16a34a;
+      --danger:#ef4444;
+      --shadow: 0 18px 50px rgba(0,0,0,.35);
+      --radius:18px;
     }
-    input, textarea, select, button {
-      width: 100%;
-      margin-bottom: 10px;
-      padding: 8px;
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, "Noto Sans Thai", sans-serif;
+      background: radial-gradient(1200px 500px at 30% 0%, rgba(34,197,94,.18), transparent 60%),
+                  radial-gradient(900px 450px at 80% 20%, rgba(59,130,246,.16), transparent 55%),
+                  linear-gradient(180deg, var(--bg), #050913 65%);
+      color:var(--text);
+      min-height:100vh;
+      padding:18px;
+    }
+    .wrap{
+      max-width:720px;
+      margin:0 auto;
+    }
+    .header{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:14px;
+      padding:18px 18px 14px;
+      border:1px solid rgba(255,255,255,.06);
+      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(8px);
+    }
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      min-width:0;
+    }
+    .logo{
+      width:46px;height:46px;border-radius:14px;
+      background: radial-gradient(circle at 30% 30%, rgba(34,197,94,.9), rgba(34,197,94,.25)),
+                  linear-gradient(135deg, rgba(59,130,246,.25), rgba(34,197,94,.1));
+      border:1px solid rgba(255,255,255,.08);
+      display:grid;place-items:center;
+      box-shadow: 0 10px 30px rgba(34,197,94,.12);
+      flex:0 0 auto;
+    }
+    .logo span{
+      font-weight:800;
+      letter-spacing:.5px;
+      color:#071018;
+      background: rgba(255,255,255,.85);
+      padding:3px 7px;
+      border-radius:10px;
+      font-size:12px;
+    }
+    .title{
+      min-width:0;
+    }
+    .title h1{
+      margin:0;
+      font-size:18px;
+      line-height:1.25;
+      font-weight:750;
+      letter-spacing:.2px;
+    }
+    .title p{
+      margin:5px 0 0;
+      color:var(--muted);
+      font-size:12.5px;
+      line-height:1.35;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      max-width:460px;
+    }
+    .pill{
+      font-size:12px;
+      color: rgba(232,238,252,.9);
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(15,27,51,.55);
+      padding:8px 10px;
+      border-radius: 999px;
+      display:flex;
+      align-items:center;
+      gap:8px;
+      flex:0 0 auto;
+    }
+    .dot{
+      width:8px;height:8px;border-radius:50%;
+      background: var(--accent);
+      box-shadow: 0 0 0 6px rgba(34,197,94,.15);
+    }
+
+    .card{
+      margin-top:14px;
+      border-radius: var(--radius);
+      border:1px solid rgba(255,255,255,.07);
+      background: linear-gradient(180deg, rgba(15,27,51,.9), rgba(12,23,48,.9));
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
+    .cardHead{
+      padding:16px 18px;
+      border-bottom:1px solid rgba(255,255,255,.06);
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+    }
+    .cardHead strong{font-size:14px}
+    .cardHead span{
+      font-size:12px;
+      color:var(--muted);
+    }
+    form{padding:16px 18px 18px}
+    .grid{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:12px;
+    }
+    @media (max-width:640px){ .grid{grid-template-columns:1fr} }
+
+    .field{
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+    }
+    .field label{
+      font-size:12px;
+      color: rgba(232,238,252,.9);
+    }
+    .field label small{
+      color: var(--muted);
+      font-weight:500;
+      margin-left:6px;
+    }
+    input, select, textarea{
+      width:100%;
+      padding:12px 12px;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(6,12,26,.55);
+      color: var(--text);
+      outline:none;
+      transition: .15s ease;
+      font-size:14px;
+    }
+    textarea{min-height:110px; resize:vertical}
+    input:focus, select:focus, textarea:focus{
+      border-color: rgba(34,197,94,.65);
+      box-shadow: 0 0 0 4px rgba(34,197,94,.12);
+    }
+    .hint{
+      font-size:12px;
+      color: var(--muted);
+      margin-top:2px;
+    }
+    .row{
+      margin-top:12px;
+      display:flex;
+      gap:10px;
+      align-items:center;
+      justify-content:flex-end;
+      flex-wrap:wrap;
+    }
+    .btn{
+      border:0;
+      border-radius: 14px;
+      padding:12px 14px;
+      font-weight:700;
+      cursor:pointer;
+      transition:.15s ease;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:10px;
+      user-select:none;
+      min-width:140px;
+    }
+    .btnPrimary{
+      background: linear-gradient(180deg, var(--accent), var(--accent2));
+      color:#06110a;
+      box-shadow: 0 12px 30px rgba(34,197,94,.18);
+    }
+    .btnPrimary:active{ transform: translateY(1px); }
+    .btnGhost{
+      background: rgba(255,255,255,.06);
+      color: var(--text);
+      border:1px solid rgba(255,255,255,.10);
+      min-width:110px;
+    }
+    .btn[disabled]{opacity:.55; cursor:not-allowed}
+    .toast{
+      margin-top:12px;
+      display:none;
+      padding:12px 14px;
+      border-radius: 14px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(6,12,26,.55);
+      color: var(--muted);
+      font-size:13px;
+    }
+    .toast.ok{
+      color: rgba(232,238,252,.95);
+      border-color: rgba(34,197,94,.30);
+      background: rgba(34,197,94,.08);
+    }
+    .toast.bad{
+      color: rgba(255,255,255,.95);
+      border-color: rgba(239,68,68,.35);
+      background: rgba(239,68,68,.10);
+    }
+    .mono{
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+      font-size:12px;
+      color: var(--muted);
     }
   </style>
 </head>
 
 <body>
-  <h2>แจ้งปัญหา IT</h2>
+  <div class="wrap">
+    <div class="header">
+      <div class="brand">
+        <div class="logo"><span>IT</span></div>
+        <div class="title">
+          <h1>Primus IT Helpdesk</h1>
+          <p id="sub">แจ้งปัญหาได้ทันที ระบบจะสร้าง Ticket และอัปเดตสถานะให้คุณ</p>
+        </div>
+      </div>
+      <div class="pill"><span class="dot"></span><span id="statusPill">Ready</span></div>
+    </div>
 
-  <form id="form" style="display:none">
-    <input id="name" placeholder="ชื่อผู้แจ้ง" />
-    <input id="dept" placeholder="แผนก" />
-    <input id="phone" placeholder="เบอร์โทร" />
-    <input id="type" placeholder="ประเภทปัญหา" />
-    <textarea id="detail" placeholder="รายละเอียด"></textarea>
+    <div class="card">
+      <div class="cardHead">
+        <strong>แบบฟอร์มแจ้งปัญหา</strong>
+        <span id="meta" class="mono">กำลังเชื่อมต่อ LINE…</span>
+      </div>
 
-    <select id="priority">
-      <option value="ปกติ">ปกติ</option>
-      <option value="ด่วน">ด่วน</option>
-    </select>
+      <form id="form" style="display:none">
+        <div class="grid">
+          <div class="field">
+            <label>ชื่อผู้แจ้ง <small>(ดึงจาก LINE)</small></label>
+            <input id="name" placeholder="ชื่อผู้แจ้ง" readonly />
+            <div class="hint">ระบบจะใช้ชื่อจากโปรไฟล์ LINE เพื่ออ้างอิง</div>
+          </div>
 
-    <button type="submit">ส่งแจ้งปัญหา</button>
-  </form>
+          <div class="field">
+            <label>แผนก</label>
+            <input id="dept" placeholder="เช่น IT / ฝ่ายขาย / บัญชี" required />
+          </div>
 
-  <p id="loading">กำลังโหลด...</p>
+          <div class="field">
+            <label>เบอร์โทร</label>
+            <input id="phone" placeholder="เช่น 08xxxxxxxx" inputmode="tel" />
+          </div>
+
+          <div class="field">
+            <label>ประเภทปัญหา</label>
+            <select id="type" required>
+              <option value="" selected disabled>เลือกประเภทปัญหา</option>
+              <option>คอมพิวเตอร์ / Windows</option>
+              <option>อินเทอร์เน็ต / LAN / Wi-Fi</option>
+              <option>Printer / Scanner</option>
+              <option>อีเมล / ระบบบัญชี</option>
+              <option>โปรแกรมภายใน / ERP</option>
+              <option>อื่น ๆ</option>
+            </select>
+          </div>
+
+          <div class="field" style="grid-column:1/-1">
+            <label>รายละเอียด</label>
+            <textarea id="detail" placeholder="อธิบายอาการ, ข้อความ error, เกิดเมื่อไหร่, ทำอะไรไปแล้วบ้าง" required></textarea>
+          </div>
+
+          <div class="field">
+            <label>ความเร่งด่วน</label>
+            <select id="priority" required>
+              <option value="ปกติ" selected>ปกติ</option>
+              <option value="ด่วน">ด่วน</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label>แนบข้อมูลเพิ่มเติม <small>(ไม่บังคับ)</small></label>
+            <input id="extra" placeholder="เช่น รหัสเครื่อง / จุดติดตั้ง / หมายเหตุ" />
+          </div>
+        </div>
+
+        <div class="row">
+          <button type="button" class="btn btnGhost" id="btnClose">ปิด</button>
+          <button type="submit" class="btn btnPrimary" id="btnSend">ส่งแจ้งปัญหา</button>
+        </div>
+
+        <div id="toast" class="toast"></div>
+      </form>
+
+      <div id="loading" style="padding:16px 18px">
+        กำลังโหลด…
+      </div>
+    </div>
+  </div>
 
   <script>
+    // ====== ปรับ 2 ค่าเท่านี้ ======
+    const LIFF_ID = "2008889647-R8wwsYYO"; // << ใส่ LIFF ID ของคุณ
+    const N8N_WEBHOOK_URL = "https://ithelp.app.n8n.cloud/webhook/line-it"; // << ใส่ production webhook ที่ใช้งานจริง
+    // =================================
+
+    const el = (id) => document.getElementById(id);
+
+    function toast(msg, type="ok") {
+      const t = el("toast");
+      t.className = "toast " + (type === "bad" ? "bad" : "ok");
+      t.textContent = msg;
+      t.style.display = "block";
+    }
+
     async function main() {
-      await liff.init({ liffId: "2008889647-R8wwsYYO" });
+      try {
+        await liff.init({ liffId: LIFF_ID });
 
-      document.getElementById("loading").style.display = "none";
-      document.getElementById("form").style.display = "block";
+        // แสดง UI
+        el("loading").style.display = "none";
+        el("form").style.display = "block";
+        el("statusPill").textContent = "Connected";
+        el("meta").textContent = "เชื่อมต่อ LINE สำเร็จ";
 
-      const profile = await liff.getProfile();
-      document.getElementById("name").value = profile.displayName;
+        // ต้อง login ก่อน ถ้าเปิดจาก browser
+        if (!liff.isLoggedIn()) liff.login();
+
+        const profile = await liff.getProfile();
+        el("name").value = profile.displayName;
+
+      } catch (err) {
+        el("statusPill").textContent = "Error";
+        el("meta").textContent = "เชื่อมต่อไม่ได้";
+        el("loading").textContent = "เกิดข้อผิดพลาด: " + (err?.message || err);
+        console.error(err);
+      }
     }
 
     main();
 
-    document.getElementById("form").onsubmit = async (e) => {
+    el("btnClose").onclick = () => {
+      if (typeof liff !== "undefined" && liff.isInClient()) liff.closeWindow();
+      else window.close();
+    };
+
+    el("form").onsubmit = async (e) => {
       e.preventDefault();
 
-      await fetch("https://ithelp.app.n8n.cloud/webhook/line-it", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          action: "NEW",
-          lineUserId: liff.getDecodedIDToken().sub,
-          "ชื่อผู้แจ้ง": name.value,
-          "แผนก": dept.value,
-          "เบอร์โทร": phone.value,
-          "ประเภทปัญหา": type.value,
-          "รายละเอียด": detail.value,
-          "ความเร่งด่วน": priority.value
-        })
-      });
+      const btn = el("btnSend");
+      btn.disabled = true;
+      toast("กำลังส่งข้อมูล…", "ok");
 
-      alert("ส่งแจ้งปัญหาเรียบร้อย");
-      liff.closeWindow();
+      try {
+        const payload = {
+          action: "NEW",
+          lineUserId: liff.getDecodedIDToken()?.sub || "",
+          "ชื่อผู้แจ้ง": el("name").value,
+          "แผนก": el("dept").value,
+          "เบอร์โทร": el("phone").value,
+          "ประเภทปัญหา": el("type").value,
+          "รายละเอียด": el("detail").value,
+          "ความเร่งด่วน": el("priority").value,
+          "หมายเหตุ": el("extra").value
+        };
+
+        const res = await fetch(N8N_WEBHOOK_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        });
+
+        if (!res.ok) throw new Error("ส่งไม่สำเร็จ (HTTP " + res.status + ")");
+
+        toast("ส่งแจ้งปัญหาเรียบร้อย ระบบจะอัปเดตสถานะให้คุณ", "ok");
+        setTimeout(() => {
+          if (liff.isInClient()) liff.closeWindow();
+        }, 700);
+
+      } catch (err) {
+        console.error(err);
+        toast("ส่งไม่สำเร็จ: " + (err?.message || err), "bad");
+        btn.disabled = false;
+      }
     };
   </script>
 </body>
 </html>
-
