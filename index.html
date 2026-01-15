@@ -351,6 +351,8 @@
         if (!liff.isLoggedIn()) liff.login();
 
         const profile = await liff.getProfile();
+        window.LINE_USER_ID = profile.userId;
+
         el("name").value = profile.displayName;
 
       } catch (err) {
@@ -380,7 +382,7 @@
         const payload = {
           action: "NEW",
           replyToken: liff.getContext()?.replyToken || "",
-          lineUserId: liff.getDecodedIDToken()?.sub || "",
+          lineUserId: window.LINE_USER_ID || "",
           "ชื่อผู้แจ้ง": el("name").value,
           "แผนก": el("dept").value,
           "เบอร์โทร": el("phone").value,
