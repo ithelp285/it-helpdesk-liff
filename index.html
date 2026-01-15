@@ -376,6 +376,7 @@
       toast("กำลังส่งข้อมูล…", "ok");
 
       try {
+        const ctx = lift.getContext();
         const payload = {
           action: "NEW",
           replyToken: ctx?.replyToken,
