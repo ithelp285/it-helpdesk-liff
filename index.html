@@ -339,6 +339,7 @@
     async function main() {
       try {
         await liff.init({ liffId: LIFF_ID });
+        const ctx = liff.getContext();
 
         // แสดง UI
         el("loading").style.display = "none";
@@ -377,6 +378,7 @@
       try {
         const payload = {
           action: "NEW",
+          replyToken: ctx?.replyToken,
           lineUserId: liff.getDecodedIDToken()?.sub || "",
           "ชื่อผู้แจ้ง": el("name").value,
           "แผนก": el("dept").value,
