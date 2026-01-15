@@ -349,7 +349,8 @@
 
         // ต้อง login ก่อน ถ้าเปิดจาก browser
         if (!liff.isLoggedIn()) liff.login();
-
+        
+        let LINE_USER_ID = "";
         const profile = await liff.getProfile();
         window.LINE_USER_ID = profile.userId;
 
